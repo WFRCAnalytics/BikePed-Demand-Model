@@ -115,8 +115,11 @@ bus_distances = [330, 660, 1320, 2640, 100000]
 bus_distances_meters = [distance * 0.3048 for distance in bus_distances]
 arcpy.FeatureClassToFeatureClass_conversion("BusStops", temp_wd, "bus_stops.shp")
 bus_buffer = MultiRing_Buffer(os.path.join(temp_wd, "bus_stops.shp"), os.path.join(temp_wd, "BusStopsBuffer.shp"),
-                              bus_distances_meters, "busdist")
+                              bus_distances_meters, "busdistm")
 arcpy.FeatureClassToFeatureClass_conversion(bus_buffer, wd, "BusStopsBuffer")
+arcpy.AddField_management("BusStopsBuffer", "busdist", "DOUBLE")
+arcpy.CalculateField_management("BusStopsBuffer", "busdist", "!busdistm!/0.3048", "PYTHON3")
+
 
 # Calc Densities
 print('Calculating densities...')
